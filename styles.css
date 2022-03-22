@@ -1,0 +1,54 @@
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 220px;
+    background-color: rgb(27, 27, 27);
+    justify-content: center;
+    padding: 0;
+    /*width: 200px;
+    height: 400px;
+    background-color: yellow;*/
+}
+
+.grid div{
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    margin: 1px;
+}
+
+
+
+.grid .tet {
+    background-color: white;
+    must add important bcz specificity for .grid div is 11 and .tet only 10
+  }
+
+
+/*
+.grid .redTet{background-color: red;}
+.grid .orangeTet{background-color: orange;}
+.grid .yellowTet{background-color: yellow;}
+.grid .greenTet{background-color: green;}
+.grid .blueTet{background-color: blue;}
+.grid .violetTet{background-color: violet;}
+.grid .purpleTet{background-color: purple;}
+
+
+.grid .redFixed{background-color: red;}
+.grid .orangeFixed{background-color: orange;}
+.grid .yellowFixed{background-color: yellow;}
+.grid .greenFixed{background-color: green;}
+.grid .blueFixed{background-color: blue;}
+.grid .violetFixed{background-color: violet;}
+.grid .purpleFixed{background-color: purple;}
+*/
+
+.base {display: none;}
+
+
+.grid .fixed {
+    background-color: lightgrey;
+}
+
+.hide {display: none;}
