@@ -1,54 +1,233 @@
+/* COLOR VARIABLES */
+:root{
+    --normal-font: rgb(110, 120, 136);
+    --dark-font: rgb(59, 65, 73);
+    --gameover-font: #7E707B;
+    --container-color: rgb(34, 39, 56);
+    --dark-container: rgb(23, 26, 36);
+    --gameover-container: #3B2936;
+    --grid-color: #181825;
+    --dark-grid: #12121B;
+    --gameover-grid: #2E171D;
+    --pause-fixed-color: rgb(28, 31, 35);
+    --gameover-fixed-color: #3C2B2C
+}
+
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    background-color: #3f4558;
+    font-family: "Poppins", sans-serif;
+    color: var(--dark-font);
+    height: 100%;
+    box-sizing: border-box;
+}
+
+
+.container{
+    box-sizing: border-box;
+    height: 95vh;
+    width: 95vh;
+    background-color: var(--dark-container);
+    border-radius: 5%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.wrapper{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content:flex-start;
+    position: relative;
+}
+
 .grid {
     display: flex;
     flex-wrap: wrap;
-    width: 220px;
-    background-color: rgb(27, 27, 27);
+    width: 270px;
     justify-content: center;
     padding: 0;
-    /*width: 200px;
-    height: 400px;
-    background-color: yellow;*/
+    top: 0; bottom: 0; left: 0; right: 0;
+    margin: auto;
+    height: 530px;
 }
+
+
+#level, .right{
+    text-align: center;
+    font-weight: 200;
+    width: 15%;
+}
+
+#mini-grid{
+    background-color: var(--dark-grid);
+    
+    height: 100px;
+    width: 100px;
+    margin-top: 30px;
+    border-radius: 8%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#mini-grid div{
+    width:20px;
+    height:20px;
+    
+}
+
+
+
+#player_score, #player_level{
+    font-size: 200%;
+    font-weight: 800;
+}
+
+
 
 .grid div{
-    width: 20px;
-    height: 20px;
-    background-color: black;
-    margin: 1px;
+    width: 25px;
+    height: 25px;
+    background-color: var(--grid-color);
+    margin: 0.7px;
+    border-radius: 10%
 }
 
 
-
+/*
 .grid .tet {
     background-color: white;
     must add important bcz specificity for .grid div is 11 and .tet only 10
   }
-
-
-/*
-.grid .redTet{background-color: red;}
-.grid .orangeTet{background-color: orange;}
-.grid .yellowTet{background-color: yellow;}
-.grid .greenTet{background-color: green;}
-.grid .blueTet{background-color: blue;}
-.grid .violetTet{background-color: violet;}
-.grid .purpleTet{background-color: purple;}
-
-
-.grid .redFixed{background-color: red;}
-.grid .orangeFixed{background-color: orange;}
-.grid .yellowFixed{background-color: yellow;}
-.grid .greenFixed{background-color: green;}
-.grid .blueFixed{background-color: blue;}
-.grid .violetFixed{background-color: violet;}
-.grid .purpleFixed{background-color: purple;}
 */
+.grid .redShadow{background-color: #FF666630;}
+.grid .orangeShadow{background-color: #FFFF6630;}
+.grid .yellowShadow{background-color: #99FFFF30;}
+.grid .greenShadow{background-color: #CC99FF30;}
+.grid .blueShadow{background-color: #99CC3330;}
+.grid .violetShadow{background-color: #6699FF30;}
+.grid .purpleShadow{background-color: #FF993330;}
+
+.grid .redTet, .grid .redFixed{background-color: #F66;}
+.grid .orangeTet, .grid .orangeFixed{background-color: #FF6;}
+.grid .yellowTet, .grid .yellowFixed{background-color: #9FF;}
+.grid .greenTet, .grid .greenFixed{background-color: #C9F;}
+.grid .blueTet, .grid .blueFixed{background-color: #9C3;}
+.grid .violetTet, .grid .violetFixed{background-color: #69F;}
+.grid .purpleTet, .grid .purpleFixed{background-color: #F93;}
+
+.redMini{background-color: #F66; outline: 0.7px solid #181825}
+.orangeMini{background-color: #FF6; outline: 0.7px solid #181825}
+.yellowMini{background-color: #9FF; outline: 0.7px solid #181825}
+.greenMini{background-color: #C9F; outline: 0.7px solid #181825}
+.blueMini{background-color: #9C3; outline: 0.7px solid #181825}
+.violetMini{background-color: #69F; outline: 0.7px solid #181825}
+.purpleMini{background-color: #F93; outline: 0.7px solid #181825}
+
+
 
 .base {display: none;}
 
+.hide {display: none;}
 
-.grid .fixed {
-    background-color: lightgrey;
+
+.pauseColor{
+    background-color: var(--dark-grid) !important
 }
 
-.hide {display: none;}
+.pauseColorFixed, .pauseColorMini{
+    background-color: var(--pause-fixed-color) !important;
+}
+
+
+
+.word{
+    font-size: 200%;
+    position: absolute;
+    margin: 0;
+    color: white;
+    top: 45%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    right: 0;
+    left: 0;
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+}
+
+.button{
+    position: absolute;
+    width: 100px;
+    left:50%;
+    margin-left: -50px;
+    text-align: center;
+    color: #181825;
+    top: 55%;
+    background-color: rgb(110, 120, 136);
+    padding: 4px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 1rem;
+    
+}
+
+#resume{
+    visibility: hidden;
+    top: 53%;
+}
+
+#restart{
+    visibility: hidden;
+}
+
+#start{
+    visibility: visible;
+    top: 53%;
+    width: 160px;
+    margin-left: -80px;
+}
+
+#howToPlay{
+    visibility: visible;
+    top: 63%;
+    width: 160px;
+    margin-left: -80px;
+
+}
+
+.button:hover{
+    background-color: rgb(122, 255, 226);
+}
+
+#instructions{
+    background-color: rgba(34, 39, 56, .95);
+    width: 65vh;
+    left:50%;
+    margin-left: -32vh;
+    height: 35vh;
+    top: 50%;
+    margin-top: -17vh;
+    color: white;
+    border-radius: 16px;
+}
+
+#close{
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+#instructions li{
+    list-style-type: none;
+}
+
+#instructions i{
+    margin-right: 10px;
+}
