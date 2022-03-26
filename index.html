@@ -2,23 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <link rel="stylesheet" href="styles.css"></link>
-    <title>Tetris Game</title>
+    <title>Tetris Alison</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;800&display=swap" rel="stylesheet">
 
 </head>
 <body>
-    <h3>Your score: <span id="score">0</span></h3>
-    <button id="start-button" >Start/Pause</button>
-    <div class="grid"> 
-        <!--200 div & 10 div with class="base" appended-->
+    <div class="container">
+        <div class="wrapper">
+            <div id="level">LEVEL<br><span id="player_level">1</span></div>
+            <!--<button id="start-button" >Start/Pause</button>-->
+            <div class="grid"> 
+                <!--200 div & 10 div with class="base" appended-->
+            </div>
+            <div class="word"></div>
+            <button id="resume" class="button" onclick="pauseAndPlay()">RESUME</button>
+            <button id="restart" class="button" onclick="restart()">RESTART</button>
+            <button id="start" class="button" onclick="start()">START GAME</button>
+            <button id="howToPlay" class="button" onclick="howToPlayScreen()">HOW TO PLAY?</button>
+            <div class="right">
+                <div id="score">SCORE<br> <span id="player_score">0</span></div>
+                <div id="mini-grid"></div>
+            </div>
+            <div id="instructions" style="position: absolute; visibility: hidden;">
+                <h4 style="text-align: center;">Instructions: </h4>
+                <ul>
+                    <li> <i class="fa fa-arrow-left"></i> Move Left</li>
+                    <li> <i class="fa fa-arrow-right"></i> Move Right</li>
+                    <li> <i class="fa fa-arrow-down"></i> Move Down</li>
+                    <li> <i class="fa fa-arrow-up"></i> Rotate</li>
+                    <li> <i class="fa fa-square-o"></i> Space Bar: Hard Drop</li>
+                    <li><i class="fa fa-pause-circle-o"></i> Esc: Pause</li>
+                    <i id='close' onclick="closeInstruction()" class="fa fa-window-close"></i> 
+                </ul>
+
+        
+            </div>
+        </div>
+
     </div>
+
 
     <script src="app.js"></script>
 </body>
+
+
+
+
+
+
 
 </html>
 
