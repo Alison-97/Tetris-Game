@@ -18,76 +18,78 @@ for (let i = 0; i < 20; i++){
 }
 
 
-let squares = Array.from(document.querySelectorAll(".grid div"));
-
-
-
 //declare variables needed
-let timerId
-let score = document.getElementById('player_score')
-let level = document.getElementById('player_level')
-let totalScore = 0
-let drop = false
-let arrGrid = []
-let currentSpeed=1000
-let startMode = true
+let squares = Array.from(document.querySelectorAll(".grid div"));
 let colorClassMini = ['redMini', 'orangeMini', 'yellowMini', 'greenMini', 'blueMini', 'violetMini', 'purpleMini']
 let colorClassTet = ['redTet', 'orangeTet', 'yellowTet', 'greenTet', 'blueTet', 'violetTet', 'purpleTet']
 let colorClassFixed = ['redFixed', 'orangeFixed', 'yellowFixed', 'greenFixed', 'blueFixed', 'violetFixed', 'purpleFixed']
 let colorClassShadow = ['redShadow', 'orangeShadow', 'yellowShadow', 'greenShadow', 'blueShadow', 'violetShadow', 'purpleShadow']
+let timerId
+let score = document.getElementById('player_score')
+let level = document.getElementById('player_level')
+let totalScore = 0
+let currentSpeed = 1000
 let gameOverMode = false
 
+let gridArr = []
 for(let i= 0; i < 230; i++){
-    arrGrid.push(i)
+    gridArr.push(i)
+}
+
+let miniGridArr = []
+for (i=0;i<25;i++){
+    miniGridArr.push(i)
 }
 
 
-arrGrid.forEach(index => squares[index].style.backgroundColor = 'var(--dark-grid)')
 
-
-
+gridArr.forEach(index => squares[index].style.backgroundColor = 'var(--dark-grid)')
 write('TETRIS')
+
+let startMode = true    //means idle mode
 function start(){
-    if(startMode){
+    if(startMode && !instructionMode){
         write('')
-        draw()
-        setSpeed(currentSpeed)
         start_btn.style.visibility = "hidden"
         restart_btn.style.visibility = "hidden"
         howToPlay_btn.style.visibility = "hidden"
-        container.style.backgroundColor = 'var(--container-color)'
+        container.style.backgroundColor = 'var(--normal-container)'
         body.style.color = 'var(--normal-font)'
-        mini_grid.style.backgroundColor = 'var(--grid-color)'
+        mini_grid.style.backgroundColor = 'var(--normal-grid)'
         miniGridArr.forEach(index => mini_squares[index].style.backgroundColor = '')
-        arrGrid.forEach(index => squares[index].style.backgroundColor = '')
+        gridArr.forEach(index => squares[index].style.backgroundColor = '')
+        draw()
+        setSpeed(currentSpeed)
     }
     startMode = false
 }
 
+function setSpeed(speed){
+    clearInterval(timerId)
+    timerId = setInterval(moveDown,(speed))
+}
 
 let playMode = true
-let pauseMode = false
+//let pauseMode = false
 function pauseAndPlay(){
-    if(!gameOverMode){
-        if(playMode && !startMode){
+    if(!gameOverMode && !startMode){
+        if(playMode){
             clearInterval(timerId)
             pauseScreen()
             playMode = false
-            pauseMode = true
-        } else if (!playMode && !startMode){
+            //pauseMode = true
+        } else if (!playMode){
             resumeScreen()
             setSpeed(currentSpeed)
             playMode = true
-            pauseMode = false
+            //pauseMode = false
         }
     }
-
 }
 
 
 
-
-// declare pause screen variables
+// declare variables to change screen & color
 let container = document.getElementsByClassName('container')[0]
 let body = document.getElementsByTagName('body')[0]
 let mini_grid = document.getElementById("mini-grid")
@@ -97,30 +99,24 @@ let restart_btn = document.getElementById('restart')
 let howToPlay_btn = document.getElementById('howToPlay')
 
 function pauseScreen(){
-    arrGrid.forEach(index => squares[index].classList.add('pauseColor'))
-    let pauseFixed = arrGrid.filter(index => squares[index].classList.contains('fixed'))
+    gridArr.forEach(index => squares[index].classList.add('pauseColor'))
+    let pauseFixed = gridArr.filter(index => squares[index].classList.contains('fixed'))
     pauseFixed.forEach(index => squares[index].classList.add('pauseColorFixed'))
     container.style.backgroundColor = 'var(--dark-container)'
     body.style.color = 'var(--dark-font)'
     mini_grid.style.backgroundColor = 'var(--dark-grid)'
-    changeColorMini('redMini')
-    changeColorMini('orangeMini')
-    changeColorMini('yellowMini')
-    changeColorMini('greenMini')
-    changeColorMini('blueMini')
-    changeColorMini('violetMini')
-    changeColorMini('purpleMini')
-
     function changeColorMini(color){
         let containMini = miniGridArr.filter(index => mini_squares[index].classList.contains(color))
         containMini.forEach(index => mini_squares[index].classList.add('pauseColorMini'))
     }
+    colorClassMini.forEach(changeColorMini)
+
     write('PAUSE')
     resume_btn.style.visibility = "visible"
     restart_btn.style.visibility = "visible"
     howToPlay_btn.style.visibility = "visible"
-    restart_btn.style.top= "63%"
-    howToPlay_btn.style.top= "73%"
+    restart_btn.style.top = "63%"
+    howToPlay_btn.style.top = "73%"
 }
 
 
@@ -128,39 +124,29 @@ function gameOverScreen(){
     container.style.backgroundColor = 'var(--gameover-container)';
     body.style.color = 'var(--gameover-font)';
     mini_grid.style.backgroundColor = 'var(--gameover-grid)'
-    arrGrid.forEach(index => squares[index].style.backgroundColor = 'var(--gameover-grid)')
-    let gameoverFixed = arrGrid.filter(index => squares[index].classList.contains('fixed'))
+    gridArr.forEach(index => squares[index].style.backgroundColor = 'var(--gameover-grid)')
+    let gameoverFixed = gridArr.filter(index => squares[index].classList.contains('fixed'))
     gameoverFixed.forEach(index => squares[index].style.backgroundColor = 'var(--gameover-fixed-color)')
-    changeColorMini('redMini')
-    changeColorMini('orangeMini')
-    changeColorMini('yellowMini')
-    changeColorMini('greenMini')
-    changeColorMini('blueMini')
-    changeColorMini('violetMini')
-    changeColorMini('purpleMini')
-
     function changeColorMini(color){
         let containMini = miniGridArr.filter(index => mini_squares[index].classList.contains(color))
         containMini.forEach(index => mini_squares[index].style.backgroundColor = 'var(--gameover-fixed-color)')
     }
+    colorClassMini.forEach(changeColorMini)
 
     write('GAME OVER')
     restart_btn.style.visibility = "visible"
     restart_btn.style.top = "55%"
 }
 
-
-
 function write(word){
     document.getElementsByClassName('word')[0].innerHTML = word
 }
 
 function resumeScreen(){
-    arrGrid.forEach(index => squares[index].classList.remove('pauseColor','pauseColorFixed'))
-    container.style.backgroundColor = 'var(--container-color)'
+    gridArr.forEach(index => squares[index].classList.remove('pauseColor','pauseColorFixed'))
+    container.style.backgroundColor = 'var(--normal-container)'
     body.style.color = 'var(--normal-font)'
-    mini_grid.style.backgroundColor = 'var(--grid-color)'
-    //arrGrid.forEach(index => squares[index].style.backgroundColor = 'var(--grid-color)')
+    mini_grid.style.backgroundColor = 'var(--normal-grid)'
     miniGridArr.forEach(index => mini_squares[index].classList.remove('pauseColorMini'))
     write('')
     resume_btn.style.visibility = "hidden"
@@ -169,14 +155,30 @@ function resumeScreen(){
 }
 
 
-function setSpeed(speed){
-    clearInterval(timerId)
-    timerId = setInterval(moveDown,(speed))
-}
+//assign functions to keyCodes
+function control(e) {
+    if(e.keyCode === 37) {
+        moveLeft()
+    } else if (e.keyCode === 38) {
+        rotate()
+    } else if (e.keyCode === 39) {
+        moveRight()
+    } else if (e.keyCode === 40) {
+        moveDown()
+    } else if (e.keyCode === 27) {
+        pauseAndPlay()
+    } else if (e.keyCode === 32) {
+        hardDrop()
+    } else if (e.keyCode === 13){
+        if(startMode){
+            start()
+        } else restart()
+    } 
+    }
+    document.addEventListener('keydown', control)
 
 
 // Create the seven tetrominoes (I, O, T, S, Z, J, and L)
-
 let iTet = [
     [0, 1, 2, 3],
     [-18, -8, 2, 12],
@@ -226,6 +228,9 @@ let lTet = [
     [-9, 1, 11, 12]
 ]
 
+let theTetrominoes = [iTet, oTet, tTet, sTet, zTet, jTet, lTet];
+
+// for mini grid display
 let nextTetromino = [
     [11, 12, 13, 14],
     [6, 7, 11, 12],
@@ -238,9 +243,7 @@ let nextTetromino = [
 
 
 
-
-let theTetrominoes = [iTet, oTet, tTet, sTet, zTet, jTet, lTet];
-
+//default position & rotation
 let currentPosition = 24;
 let currentRotation = 0;
 let randomTet = Math.floor(Math.random() * 7);
@@ -249,47 +252,17 @@ let randomDisplay = Math.floor(Math.random() * 7);
 let nextTetDisplay = nextTetromino[randomDisplay]
 
 
+//draw tet & its shadow
 function draw(){
     display()
-    if(randomTet == 0){
-        current.forEach(index => squares[currentPosition + index].classList.add('redTet'))
-        shadow('redShadow')
-    }
-    if(randomTet == 1){
-        current.forEach(index => squares[currentPosition + index].classList.add('orangeTet'))
-        shadow('orangeShadow')
-    }
-    if(randomTet == 2){
-        current.forEach(index => squares[currentPosition + index].classList.add('yellowTet'))
-        shadow('yellowShadow')
-    }
-    if(randomTet == 3){
-        current.forEach(index => squares[currentPosition + index].classList.add('greenTet'))
-        shadow('greenShadow')
-    }
-    if(randomTet == 4){
-        current.forEach(index => squares[currentPosition + index].classList.add('blueTet'))
-        shadow('blueShadow')
-    }
-    if(randomTet == 5){
-        current.forEach(index => squares[currentPosition + index].classList.add('violetTet'))
-        shadow('violetShadow')
-    }
-    if(randomTet == 6){
-        current.forEach(index => squares[currentPosition + index].classList.add('purpleTet'))
-        shadow('purpleShadow')
-    }
+    current.forEach(index => squares[currentPosition + index].classList.add(colorClassTet[randomTet]))
+    shadow(colorClassShadow[randomTet])
 
     function shadow(shadowColor){
-        let i = 10;
+        let i = 0;
         let shadowLandBase = false
         let shadowLandFixed = false
-        let touchFixed = current.some(index => squares[currentPosition + index + 10].classList.contains('fixed'))
-        let touchBase = current.some(index => squares[currentPosition + index + 10].classList.contains('base'))
-        if(touchFixed || touchBase){
-            current.some(index => squares[currentPosition + index].classList.add(shadowColor))
-        }
-        while(!shadowLandBase && !shadowLandFixed && !touchFixed && !touchBase){
+        while(!shadowLandBase && !shadowLandFixed){
             let shadow = current.map(index => currentPosition + index + i)
             shadowLandBase = shadow.some(index => squares[index + 10].classList.contains('base'))
             shadowLandFixed = shadow.some(index => squares[index + 10].classList.contains('fixed'))
@@ -301,42 +274,22 @@ function draw(){
     }
 }
 
-let miniGridArr = []
-for (i=0;i<25;i++){
-    miniGridArr.push(i)
-}
 
 function display(){
     miniGridArr.forEach(index => mini_squares[index].classList.remove(...colorClassMini))
-    if(randomDisplay == 0){ miniDisplayColor('redMini')}
-    if(randomDisplay == 1){ miniDisplayColor('orangeMini')}
-    if(randomDisplay == 2){ miniDisplayColor('yellowMini')}
-    if(randomDisplay == 3){ miniDisplayColor('greenMini')}
-    if(randomDisplay == 4){ miniDisplayColor('blueMini')}
-    if(randomDisplay == 5){ miniDisplayColor('violetMini')}
-    if(randomDisplay == 6){ miniDisplayColor('purpleMini')}
-
     function miniDisplayColor(color){
         nextTetromino[randomDisplay].forEach(index => mini_squares[index].classList.add(color))
     }
-    
+    miniDisplayColor(colorClassMini[randomDisplay])
 }
 
-
-
-
-
-
 function undraw(){
-    current.forEach(index => {
-        squares[currentPosition + index].classList.remove(...colorClassTet)
-    })
-    //let containShadow = arrGrid.filter(index => squares[index].classList.contains('redShadow' || 'orangeShadow' || 'yellowShadow' || 'greenShadow' || 'blueShadow' || 'violetShadow' || 'purpleShadow'))
-    arrGrid.forEach(index => squares[index].classList.remove(...colorClassShadow))
+    current.forEach(index => {squares[currentPosition + index].classList.remove(...colorClassTet)})
+    gridArr.forEach(index => squares[index].classList.remove(...colorClassShadow))
 }
 
 function moveDown() {
-    if(playMode && !startMode && !startMode){
+    if(playMode && !startMode){
         freeze()
         undraw()
         currentPosition += 10
@@ -344,39 +297,25 @@ function moveDown() {
     }
 }
 
-//Make tet stops when touch base/fixed
+//check if tet is touching base/fixed
+let drop = false
 function freeze(){
     let touchBase = current.some(index => squares[currentPosition + index + 10].classList.contains('base'))
-    if (touchBase && !drop) {
-        current.forEach(index => squares[currentPosition + index].classList.remove(...colorClassTet))
-        current.forEach(index => squares[currentPosition + index].classList.add('fixed'))
-        if(randomTet == 0){current.forEach(index => squares[currentPosition + index].classList.add('redFixed'))}
-        if(randomTet == 1){current.forEach(index => squares[currentPosition + index].classList.add('orangeFixed'))}
-        if(randomTet == 2){current.forEach(index => squares[currentPosition + index].classList.add('yellowFixed'))}
-        if(randomTet == 3){current.forEach(index => squares[currentPosition + index].classList.add('greenFixed'))}
-        if(randomTet == 4){current.forEach(index => squares[currentPosition + index].classList.add('blueFixed'))}
-        if(randomTet == 5){current.forEach(index => squares[currentPosition + index].classList.add('violetFixed'))}
-        if(randomTet == 6){current.forEach(index => squares[currentPosition + index].classList.add('purpleFixed'))}
-    }
     let touchFixed = current.some(index => squares[currentPosition + index + 10].classList.contains('fixed'))
-    if (touchFixed && !drop) {
+    if ((touchBase || touchFixed) && !drop) {
+        //remove moving tet, make it a fixed one, add color class
         current.forEach(index => squares[currentPosition + index].classList.remove(...colorClassTet))
         current.forEach(index => squares[currentPosition + index].classList.add('fixed'))
-        if(randomTet == 0){current.forEach(index => squares[currentPosition + index].classList.add('redFixed'))}
-        if(randomTet == 1){current.forEach(index => squares[currentPosition + index].classList.add('orangeFixed'))}
-        if(randomTet == 2){current.forEach(index => squares[currentPosition + index].classList.add('yellowFixed'))}
-        if(randomTet == 3){current.forEach(index => squares[currentPosition + index].classList.add('greenFixed'))}
-        if(randomTet == 4){current.forEach(index => squares[currentPosition + index].classList.add('blueFixed'))}
-        if(randomTet == 5){current.forEach(index => squares[currentPosition + index].classList.add('violetFixed'))}
-        if(randomTet == 6){current.forEach(index => squares[currentPosition + index].classList.add('purpleFixed'))}
+        current.forEach(index => squares[currentPosition + index].classList.add(colorClassFixed[randomTet]))
     }
+    
     if (touchBase || touchFixed || drop){
         deductLine()
         callNextRandom()
         currentRotation = 0
         draw()
     }
-    let thirdLine = [20,21,22,23,24,25,26,27,28,29,30, 31, 32,33,34,35,36,37,38,39]
+    let thirdLine = [20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39] //unsolved bug
     let gameOver = thirdLine.some(index => squares[index].classList.contains('fixed'))
     if (gameOver){
         gameOverMode = true
@@ -390,7 +329,6 @@ function freeze(){
 
 //keep changing falling tet
 function callNextRandom(){
-    //let nextRandom = Math.floor(Math.random() * 7);
     randomTet = randomDisplay
     current = theTetrominoes[randomTet][0];
     currentPosition = 24
@@ -398,37 +336,14 @@ function callNextRandom(){
 }
 
 
-//assign functions to keyCodes
-function control(e) {
-if(e.keyCode === 37) {
-    moveLeft()
-} else if (e.keyCode === 38) {
-    rotate()
-} else if (e.keyCode === 39) {
-    moveRight()
-} else if (e.keyCode === 40) {
-    moveDown()
-} else if (e.keyCode === 27) {
-    pauseAndPlay()
-} else if (e.keyCode === 32) {
-    hardDrop()
-} else if (e.keyCode === 13){
-    if(startMode){
-        start()
-    } else restart()
-} 
-}
-document.addEventListener('keydown', control)
-
-
 function moveLeft(){
     if(playMode && !startMode){
         undraw()
-        currentPosition --
+        currentPosition--
         let touchLeftEdge = current.some(index => (currentPosition + index + 1) % 10 == 0)
-        if (touchLeftEdge){currentPosition ++}
+        if (touchLeftEdge){currentPosition++}
         let touchLeftFixed = current.some(index => squares[currentPosition + index].classList.contains('fixed'))
-        if (touchLeftFixed){currentPosition ++}
+        if (touchLeftFixed){currentPosition++}
         draw()
     }
 }
@@ -436,22 +351,20 @@ function moveLeft(){
 function moveRight(){
     if(playMode && !startMode){
         undraw()
-        currentPosition ++
+        currentPosition++
         let touchRightEdge = current.some(index => (currentPosition + index - 1) % 10 == 9)
-        if (touchRightEdge){currentPosition --}
+        if (touchRightEdge){currentPosition--}
         let touchRightFixed = current.some(index => squares[currentPosition + index].classList.contains('fixed'))
-        if (touchRightFixed){currentPosition --}
+        if (touchRightFixed){currentPosition--}
         draw()
     }
 }
 
 
-
-
 function rotate(){
     if(playMode && !startMode){
         undraw()
-        currentRotation ++
+        currentRotation++
         if(currentRotation == 4){
             currentRotation = 0;
         }
@@ -486,9 +399,9 @@ function horizontalStuck(){
     let stuckByRight = current.some(index => squares[currentPosition + index + 1].classList.contains('fixed'))
     let stuckByLeft = current.some(index => squares[currentPosition + index - 1].classList.contains('fixed'))
     if(stuckByRight && stuckByLeft && nextContainFixed){
-        if(currentRotation == 0){
+        if(currentRotation == 0){   // avoid it from becoming -1
             currentRotation = 3
-            return true
+            return true     // true means the rotation has ald been revert
         } else {
             currentRotation--
             return true
@@ -692,7 +605,6 @@ function iTet_finalCheck(){
 }
 
 
-
 function deductLine(){
     let oneUnit = []
     for(let i = 0; i < 10; i++){
@@ -714,14 +626,7 @@ function deductLine(){
             }
 
             dropDown('fixed')
-            dropDown('redFixed')
-            dropDown('orangeFixed')
-            dropDown('yellowFixed')
-            dropDown('greenFixed')
-            dropDown('blueFixed')
-            dropDown('violetFixed')
-            dropDown('purpleFixed')
-
+            colorClassFixed.forEach(dropDown)
             function dropDown(fix){
                 let containFix = checkAbove.filter(index => squares[index].classList.contains(fix))
                 containFix.forEach(index => squares[index].classList.remove(fix))
@@ -750,85 +655,59 @@ let currentLevel = 1
 function checkLevel(){
     if (totalScore > 1999){
         currentLevel = 2
-        level.innerHTML = currentLevel
-        currentSpeed=900
-        setSpeed(currentSpeed)
+        currentSpeed = 900
     }
     if (totalScore > 3999){
         currentLevel = 3
-        level.innerHTML = currentLevel
-        currentSpeed=800
-        setSpeed(currentSpeed)
+        currentSpeed = 800
     }
     if (totalScore > 5999){
         currentLevel = 4
-        level.innerHTML = currentLevel
-        currentSpeed=700
-        setSpeed(currentSpeed)
+        currentSpeed = 700
     }
     if (totalScore > 7999){
         currentLevel = 5
-        level.innerHTML = currentLevel
-        currentSpeed=600
-        setSpeed(currentSpeed)
+        currentSpeed = 600
     }
     if (totalScore > 9999){
         currentLevel = 6
-        level.innerHTML = currentLevel
-        currentSpeed=500
-        setSpeed(currentSpeed)
+        currentSpeed = 500
     }
     if (totalScore > 11999){
         currentLevel = 7
-        level.innerHTML = currentLevel
-        currentSpeed=400
-        setSpeed(currentSpeed)
+        currentSpeed = 400
     }
     if (totalScore > 13999){
         currentLevel = 8
-        level.innerHTML = currentLevel
-        currentSpeed=300
-        setSpeed(currentSpeed)
+        currentSpeed = 300
     }
     if (totalScore > 15999){
         currentLevel = 9
-        level.innerHTML = currentLevel
-        currentSpeed=250
-        setSpeed(currentSpeed)
+        currentSpeed = 250
     }
     if (totalScore > 17999){
         currentLevel = 10
-        level.innerHTML = currentLevel
-        currentSpeed=200
-        setSpeed(currentSpeed)
+        currentSpeed = 200
     }
     if (totalScore > 19999){
         currentLevel = 11
-        level.innerHTML = currentLevel
-        currentSpeed=150
-        setSpeed(currentSpeed)
+        currentSpeed = 150
     }
     if (totalScore > 21999){
         currentLevel = 12
-        level.innerHTML = currentLevel
-        currentSpeed=100
-        setSpeed(currentSpeed)
+        currentSpeed = 100
+
     }
+    level.innerHTML = currentLevel
+    setSpeed(currentSpeed)
 }
 
 function hardDrop(){
     if(playMode && !startMode){
-        arrGrid.forEach(index => squares[index].classList.remove(...colorClassTet))
-        if (randomTet == 0) { shadowToFixed ('redShadow', 'redFixed')}
-        if (randomTet == 1) { shadowToFixed ('orangeShadow', 'orangeFixed')}
-        if (randomTet == 2) { shadowToFixed ('yellowShadow', 'yellowFixed')}
-        if (randomTet == 3) { shadowToFixed ('greenShadow', 'greenFixed')}
-        if (randomTet == 4) { shadowToFixed ('blueShadow', 'blueFixed')}
-        if (randomTet == 5) { shadowToFixed ('violetShadow', 'violetFixed')}
-        if (randomTet == 6) { shadowToFixed ('purpleShadow', 'purpleFixed')}
-    
+        gridArr.forEach(index => squares[index].classList.remove(...colorClassTet))
+        shadowToFixed(colorClassShadow[randomTet], colorClassFixed[randomTet])
         function shadowToFixed(shadowColor, fixedColor){
-            let containShadow = arrGrid.filter(index => squares[index].classList.contains(shadowColor))
+            let containShadow = gridArr.filter(index => squares[index].classList.contains(shadowColor))
             containShadow.forEach(index => squares[index].classList.remove(shadowColor))
             containShadow.forEach(index => squares[index].classList.add('fixed'))
             containShadow.forEach(index => squares[index].classList.add(fixedColor))
@@ -840,14 +719,13 @@ function hardDrop(){
 }
 
 
-
 for (let i=0; i<25; i++){
     mini_grid.appendChild(document.createElement("div"));
 }
 let mini_squares = Array.from(document.querySelectorAll("#mini-grid div"));
 
 function restart(){
-    if(!playMode){
+    if(!playMode && !instructionMode){
         startMode = true
         currentLevel = 1
         level.innerHTML = currentLevel
@@ -855,8 +733,8 @@ function restart(){
         score.innerHTML = totalScore
         currentSpeed = 1000
         currentPosition = 24
-        arrGrid.forEach(index => squares[index].classList.remove('fixed', 'pauseColor', 'pauseColorFixed'))
-        arrGrid.forEach(index => squares[index].classList.remove(...colorClassFixed,...colorClassShadow,...colorClassTet))
+        gridArr.forEach(index => squares[index].classList.remove('fixed', 'pauseColor', 'pauseColorFixed'))
+        gridArr.forEach(index => squares[index].classList.remove(...colorClassFixed,...colorClassShadow,...colorClassTet))
         miniGridArr.forEach(index => mini_squares[index].classList.remove(...colorClassMini, 'pauseColorMini'))
         start()
         write('')
@@ -886,9 +764,6 @@ function closeInstruction(){
     instructionMode = false
 }
 
-
-
-
 /*
 to do:
 hold
@@ -896,6 +771,5 @@ effect when level up
 effect when deduct line
 add score when tet drops
 problem: game over at second roll
-do factorize & optimization
 */
 
