@@ -3,16 +3,15 @@
     --normal-font: rgb(110, 120, 136);
     --dark-font: rgb(59, 65, 73);
     --gameover-font: #7E707B;
-    --container-color: rgb(34, 39, 56);
+    --normal-container: rgb(34, 39, 56);
     --dark-container: rgb(23, 26, 36);
     --gameover-container: #3B2936;
-    --grid-color: #181825;
+    --normal-grid: #181825;
     --dark-grid: #12121B;
     --gameover-grid: #2E171D;
     --pause-fixed-color: rgb(28, 31, 35);
     --gameover-fixed-color: #3C2B2C
 }
-
 
 body{
     display: flex;
@@ -21,27 +20,22 @@ body{
     background-color: #3f4558;
     font-family: "Poppins", sans-serif;
     color: var(--dark-font);
-    height: 100%;
     box-sizing: border-box;
 }
 
-
 .container{
-    box-sizing: border-box;
     height: 95vh;
     width: 95vh;
     background-color: var(--dark-container);
     border-radius: 5%;
+    display: flex;
     justify-content: center;
     align-items: center;
-    display: flex;
 }
 
 .wrapper{
     display: flex;
-    flex-flow: row wrap;
-    justify-content:flex-start;
-    position: relative;
+    position: relative; /*so that .word & the buttons can be positioned absolutely*/
 }
 
 .grid {
@@ -50,11 +44,23 @@ body{
     width: 270px;
     justify-content: center;
     padding: 0;
-    top: 0; bottom: 0; left: 0; right: 0;
+    /*top: 0; bottom: 0; left: 0; right: 0;
     margin: auto;
-    height: 530px;
+    height: 530px;*/
+    height: auto;
 }
 
+.grid div{
+    width: 25px;
+    height: 25px;
+    background-color: var(--normal-grid); /* speciality issue (read below) */
+    margin: 0.7px;
+    border-radius: 10%
+}
+
+/* the 10 base & 20 top div in grid */
+.base {display: none;}
+.hide {display: none;}
 
 #level, .right{
     text-align: center;
@@ -64,7 +70,6 @@ body{
 
 #mini-grid{
     background-color: var(--dark-grid);
-    
     height: 100px;
     width: 100px;
     margin-top: 30px;
@@ -76,33 +81,14 @@ body{
 #mini-grid div{
     width:20px;
     height:20px;
-    
 }
-
-
 
 #player_score, #player_level{
     font-size: 200%;
     font-weight: 800;
 }
 
-
-
-.grid div{
-    width: 25px;
-    height: 25px;
-    background-color: var(--grid-color);
-    margin: 0.7px;
-    border-radius: 10%
-}
-
-
-/*
-.grid .tet {
-    background-color: white;
-    must add important bcz specificity for .grid div is 11 and .tet only 10
-  }
-*/
+/* .grid is added to ensure specificity higher than .grid div */
 .grid .redShadow{background-color: #FF666630;}
 .grid .orangeShadow{background-color: #FFFF6630;}
 .grid .yellowShadow{background-color: #99FFFF30;}
@@ -119,6 +105,8 @@ body{
 .grid .violetTet, .grid .violetFixed{background-color: #69F;}
 .grid .purpleTet, .grid .purpleFixed{background-color: #F93;}
 
+
+
 .redMini{background-color: #F66; outline: 0.7px solid #181825}
 .orangeMini{background-color: #FF6; outline: 0.7px solid #181825}
 .yellowMini{background-color: #9FF; outline: 0.7px solid #181825}
@@ -126,12 +114,6 @@ body{
 .blueMini{background-color: #9C3; outline: 0.7px solid #181825}
 .violetMini{background-color: #69F; outline: 0.7px solid #181825}
 .purpleMini{background-color: #F93; outline: 0.7px solid #181825}
-
-
-
-.base {display: none;}
-
-.hide {display: none;}
 
 
 .pauseColor{
@@ -143,19 +125,15 @@ body{
 }
 
 
-
 .word{
     font-size: 200%;
     position: absolute;
-    margin: 0;
     color: white;
-    top: 45%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
+    top: 43%;
     right: 0;
     left: 0;
     text-align: center;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+    font-family: 'Trebuchet MS', Arial, sans-serif;
 }
 
 .button{
@@ -164,16 +142,15 @@ body{
     left:50%;
     margin-left: -50px;
     text-align: center;
-    color: #181825;
+    color: var(--normal-grid);
     top: 55%;
-    background-color: rgb(110, 120, 136);
+    background-color: var(--normal-font);
     padding: 4px;
-    border-radius: 16px;
+    border-radius: 15px;
     border: none;
     cursor: pointer;
     font-family: "Poppins", sans-serif;
     font-size: 1rem;
-    
 }
 
 #resume{
@@ -197,7 +174,6 @@ body{
     top: 63%;
     width: 160px;
     margin-left: -80px;
-
 }
 
 .button:hover{
@@ -214,6 +190,7 @@ body{
     margin-top: -17vh;
     color: white;
     border-radius: 16px;
+    font-size: 90%;
 }
 
 #close{
@@ -231,3 +208,10 @@ body{
 #instructions i{
     margin-right: 10px;
 }
+
+/*speciality issue: why the default css for all other element are using dark- color, 
+but only grid is using normal-grid? if it is using dark-color, when u click start button,
+you'll need to change the color using JS, meaning the changes is made directly into the element,
+as an inline element, so an inline element would mask all the colors defined in the classes;
+so my solution is, use the normal color first, then add dark color in JS, and remove the dark color
+when start button is clicked*/
