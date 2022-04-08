@@ -10,7 +10,17 @@
     --dark-grid: #12121B;
     --gameover-grid: #2E171D;
     --pause-fixed-color: rgb(28, 31, 35);
-    --gameover-fixed-color: #3C2B2C
+    --gameover-fixed-color: #3C2B2C;
+
+    /* THE SEVEN TET COLORS */
+    --color1: 147, 191, 180;
+    --color2: 152, 109, 91;
+    --color3: 230, 107, 101;
+    --color4: 95, 125, 136;
+    --color5: 217, 167, 119;
+    --color6: 218, 197, 139;
+    --color7: 241, 238, 199;
+    --alpha: 0.2;
 }
 
 body{
@@ -44,9 +54,6 @@ body{
     width: 270px;
     justify-content: center;
     padding: 0;
-    /*top: 0; bottom: 0; left: 0; right: 0;
-    margin: auto;
-    height: 530px;*/
     height: auto;
 }
 
@@ -88,32 +95,38 @@ body{
     font-weight: 800;
 }
 
+
+
+
+
+
 /* .grid is added to ensure specificity higher than .grid div */
-.grid .redShadow{background-color: #FF666630;}
-.grid .orangeShadow{background-color: #FFFF6630;}
-.grid .yellowShadow{background-color: #99FFFF30;}
-.grid .greenShadow{background-color: #CC99FF30;}
-.grid .blueShadow{background-color: #99CC3330;}
-.grid .violetShadow{background-color: #6699FF30;}
-.grid .purpleShadow{background-color: #FF993330;}
+.grid .redShadow{background-color: rgba(var(--color1), var(--alpha));}
+.grid .orangeShadow{background-color: rgba(var(--color2), var(--alpha));}
+.grid .yellowShadow{background-color: rgba(var(--color3), var(--alpha));}
+.grid .greenShadow{background-color: rgba(var(--color4), var(--alpha));}
+.grid .blueShadow{background-color: rgba(var(--color5), var(--alpha));}
+.grid .violetShadow{background-color: rgba(var(--color6), var(--alpha));}
+.grid .purpleShadow{background-color: rgba(var(--color7), var(--alpha));}
 
-.grid .redTet, .grid .redFixed{background-color: #F66;}
-.grid .orangeTet, .grid .orangeFixed{background-color: #FF6;}
-.grid .yellowTet, .grid .yellowFixed{background-color: #9FF;}
-.grid .greenTet, .grid .greenFixed{background-color: #C9F;}
-.grid .blueTet, .grid .blueFixed{background-color: #9C3;}
-.grid .violetTet, .grid .violetFixed{background-color: #69F;}
-.grid .purpleTet, .grid .purpleFixed{background-color: #F93;}
+.grid .redTet, .grid .redFixed{background-color: rgb(var(--color1));}
+.grid .orangeTet, .grid .orangeFixed{background-color: rgb(var(--color2));}
+.grid .yellowTet, .grid .yellowFixed{background-color: rgb(var(--color3));}
+.grid .greenTet, .grid .greenFixed{background-color: rgb(var(--color4));}
+.grid .blueTet, .grid .blueFixed{background-color: rgb(var(--color5));}
+.grid .violetTet, .grid .violetFixed{background-color: rgb(var(--color6));}
+.grid .purpleTet, .grid .purpleFixed{background-color: rgb(var(--color7));}
 
 
 
-.redMini{background-color: #F66; outline: 0.7px solid #181825}
-.orangeMini{background-color: #FF6; outline: 0.7px solid #181825}
-.yellowMini{background-color: #9FF; outline: 0.7px solid #181825}
-.greenMini{background-color: #C9F; outline: 0.7px solid #181825}
-.blueMini{background-color: #9C3; outline: 0.7px solid #181825}
-.violetMini{background-color: #69F; outline: 0.7px solid #181825}
-.purpleMini{background-color: #F93; outline: 0.7px solid #181825}
+
+.redMini{background-color: rgb(var(--color1)); outline: 0.7px solid #181825}
+.orangeMini{background-color: rgb(var(--color2)); outline: 0.7px solid #181825}
+.yellowMini{background-color: rgb(var(--color3)); outline: 0.7px solid #181825}
+.greenMini{background-color: rgb(var(--color4)); outline: 0.7px solid #181825}
+.blueMini{background-color: rgb(var(--color5)); outline: 0.7px solid #181825}
+.violetMini{background-color: rgb(var(--color6)); outline: 0.7px solid #181825}
+.purpleMini{background-color: rgb(var(--color7)); outline: 0.7px solid #181825}
 
 
 .pauseColor{
@@ -214,4 +227,9 @@ but only grid is using normal-grid? if it is using dark-color, when u click star
 you'll need to change the color using JS, meaning the changes is made directly into the element,
 as an inline element, so an inline element would mask all the colors defined in the classes;
 so my solution is, use the normal color first, then add dark color in JS, and remove the dark color
-when start button is clicked*/
+when start button is clicked
+
+why mini-grid can, normal grid cannot? cz minigrid is a container for the mini div, and im changing
+the color of the entire container, but for normal grid, im changing the color of each div, not
+the grid that act as a container
+*/
