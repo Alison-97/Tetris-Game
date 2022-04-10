@@ -41,14 +41,41 @@ for (i=0;i<25;i++){
     miniGridArr.push(i)
 }
 
+// FOR PAUSE SCREEN, RESUME SCREEN & GAME OVER SCREEN, INSTRUCTION SCREEN
+let container = document.getElementsByClassName('container')[0]
+let body = document.getElementsByTagName('body')[0]
+let mini_grid = document.getElementById("mini-grid")
+let hold_grid = document.getElementById("hold-grid")
+let resume_btn = document.getElementById('resume')
+let start_btn = document.getElementById('start')
+let restart_btn = document.getElementById('restart')
+let howToPlay_btn = document.getElementById('howToPlay')
+let popUp = document.getElementById('level-up-pop-up')
+
+// Tet & miniTet setting
+let randomTet // = Math.floor(Math.random() * 7);
+let randomDisplay //= Math.floor(Math.random() * 7);
+let current //= theTetrominoes[randomTet][currentRotation];
+let nextTetDisplay //= smallTetromino[randomDisplay][0]
 
 
+
+
+
+// At start screen
 gridArr.forEach(index => squares[index].style.backgroundColor = 'var(--dark-grid)')
+let write = word => document.getElementsByClassName('word')[0].innerHTML = word;
 write('TETRIS')
 
-let startMode = true    //means idle mode
+// START, PAUSE, RESTART BUTTON
+let idleMode = true
+let playMode = false
+let instructionMode = false
+
 function start(){
-    if(startMode && !instructionMode){
+    if(idleMode && !instructionMode){
+        playMode = true
+        idleMode = false
         write('')
         start_btn.style.visibility = "hidden"
         restart_btn.style.visibility = "hidden"
@@ -56,12 +83,19 @@ function start(){
         container.style.backgroundColor = 'var(--normal-container)'
         body.style.color = 'var(--normal-font)'
         mini_grid.style.backgroundColor = 'var(--normal-grid)'
+        hold_grid.style.backgroundColor = 'var(--normal-grid)'
         miniGridArr.forEach(index => mini_squares[index].style.backgroundColor = '')
+        miniGridArr.forEach(index => hold_squares[index].classList.remove(...colorClassMini))
+        miniGridArr.forEach(index => hold_squares[index].classList.remove('pauseColorMini'))
+        miniGridArr.forEach(index => hold_squares[index].style.backgroundColor = '')
         gridArr.forEach(index => squares[index].style.backgroundColor = '')
+        randomTet = Math.floor(Math.random() * 7);
+        randomDisplay = Math.floor(Math.random() * 7);
+        current = theTetrominoes[randomTet][currentRotation];
+        nextTetDisplay = smallTetromino[randomDisplay][0]
         draw()
         setSpeed(currentSpeed)
     }
-    startMode = false
 }
 
 function setSpeed(speed){
@@ -69,35 +103,55 @@ function setSpeed(speed){
     timerId = setInterval(moveDown,(speed))
 }
 
-let playMode = true
-//let pauseMode = false
 function pauseAndPlay(){
-    if(!gameOverMode && !startMode){
+    if(!gameOverMode && !idleMode){
         if(playMode){
             clearInterval(timerId)
             pauseScreen()
             playMode = false
-            //pauseMode = true
         } else if (!playMode){
             resumeScreen()
             setSpeed(currentSpeed)
+            closeInstruction()      //if it is opened
             playMode = true
-            //pauseMode = false
         }
+    }
+}
+
+for (let i=0; i<25; i++){
+    mini_grid.appendChild(document.createElement("div"));
+    hold_grid.appendChild(document.createElement("div"));
+}
+let mini_squares = Array.from(document.querySelectorAll("#mini-grid div"));
+let hold_squares = Array.from(document.querySelectorAll("#hold-grid div"));
+
+function restart(){
+    if(!playMode && !instructionMode){
+        idleMode = true
+        currentLevel = 1
+        level.innerHTML = currentLevel
+        totalScore = 0
+        score.innerHTML = totalScore
+        currentSpeed = 1000
+        currentPosition = 24
+        gridArr.forEach(index => squares[index].classList.remove('fixed', 'pauseColor', 'pauseColorFixed'))
+        gridArr.forEach(index => squares[index].classList.remove(...colorClassFixed,...colorClassShadow,...colorClassTet))
+        miniGridArr.forEach(index => mini_squares[index].classList.remove(...colorClassMini, 'pauseColorMini'))
+        start()
+        write('')
+        playMode = true
+        gameOverMode = false
+        resume_btn.style.visibility = "hidden"
     }
 }
 
 
 
-// declare variables to change screen & color
-let container = document.getElementsByClassName('container')[0]
-let body = document.getElementsByTagName('body')[0]
-let mini_grid = document.getElementById("mini-grid")
-let resume_btn = document.getElementById('resume')
-let start_btn = document.getElementById('start')
-let restart_btn = document.getElementById('restart')
-let howToPlay_btn = document.getElementById('howToPlay')
 
+
+
+
+// PAUSE, GAME OVER, RESUME, HOW-TO-PLAY SCREEN
 function pauseScreen(){
     gridArr.forEach(index => squares[index].classList.add('pauseColor'))
     let pauseFixed = gridArr.filter(index => squares[index].classList.contains('fixed'))
@@ -105,12 +159,17 @@ function pauseScreen(){
     container.style.backgroundColor = 'var(--dark-container)'
     body.style.color = 'var(--dark-font)'
     mini_grid.style.backgroundColor = 'var(--dark-grid)'
+    hold_grid.style.backgroundColor = 'var(--dark-grid)'
     function changeColorMini(color){
         let containMini = miniGridArr.filter(index => mini_squares[index].classList.contains(color))
         containMini.forEach(index => mini_squares[index].classList.add('pauseColorMini'))
     }
+    function changeColorHold(color){
+        let containHold = miniGridArr.filter(index => hold_squares[index].classList.contains(color))
+        containHold.forEach(index => hold_squares[index].classList.add('pauseColorMini'))
+    }
     colorClassMini.forEach(changeColorMini)
-
+    colorClassMini.forEach(changeColorHold)
     write('PAUSE')
     resume_btn.style.visibility = "visible"
     restart_btn.style.visibility = "visible"
@@ -119,11 +178,11 @@ function pauseScreen(){
     howToPlay_btn.style.top = "73%"
 }
 
-
 function gameOverScreen(){
     container.style.backgroundColor = 'var(--gameover-container)';
     body.style.color = 'var(--gameover-font)';
     mini_grid.style.backgroundColor = 'var(--gameover-grid)'
+    hold_grid.style.backgroundColor = 'var(--gameover-grid)'
     gridArr.forEach(index => squares[index].style.backgroundColor = 'var(--gameover-grid)')
     let gameoverFixed = gridArr.filter(index => squares[index].classList.contains('fixed'))
     gameoverFixed.forEach(index => squares[index].style.backgroundColor = 'var(--gameover-fixed-color)')
@@ -131,15 +190,15 @@ function gameOverScreen(){
         let containMini = miniGridArr.filter(index => mini_squares[index].classList.contains(color))
         containMini.forEach(index => mini_squares[index].style.backgroundColor = 'var(--gameover-fixed-color)')
     }
+    function changeColorHold(color){
+        let containHold = miniGridArr.filter(index => hold_squares[index].classList.contains(color))
+        containHold.forEach(index => hold_squares[index].style.backgroundColor = 'var(--gameover-fixed-color)')
+    }
     colorClassMini.forEach(changeColorMini)
-
+    colorClassMini.forEach(changeColorHold)
     write('GAME OVER')
     restart_btn.style.visibility = "visible"
     restart_btn.style.top = "55%"
-}
-
-function write(word){
-    document.getElementsByClassName('word')[0].innerHTML = word
 }
 
 function resumeScreen(){
@@ -147,112 +206,86 @@ function resumeScreen(){
     container.style.backgroundColor = 'var(--normal-container)'
     body.style.color = 'var(--normal-font)'
     mini_grid.style.backgroundColor = 'var(--normal-grid)'
+    hold_grid.style.backgroundColor = 'var(--normal-grid)'
     miniGridArr.forEach(index => mini_squares[index].classList.remove('pauseColorMini'))
+    miniGridArr.forEach(index => hold_squares[index].classList.remove('pauseColorMini'))
     write('')
     resume_btn.style.visibility = "hidden"
     restart_btn.style.visibility = "hidden"
     howToPlay_btn.style.visibility = "hidden"
 }
 
+function howToPlayScreen(){
+    document.getElementById('instructions').style.visibility = 'visible';
+    instructionMode = true
+    playMode = false
+}
 
-//assign functions to keyCodes
-function control(e) {
-    if(e.keyCode === 37) {
-        moveLeft()
-    } else if (e.keyCode === 38) {
-        rotate()
-    } else if (e.keyCode === 39) {
-        moveRight()
-    } else if (e.keyCode === 40) {
-        moveDown()
-    } else if (e.keyCode === 27) {
-        pauseAndPlay()
-    } else if (e.keyCode === 32) {
-        hardDrop()
-    } else if (e.keyCode === 13){
-        if(startMode){
-            start()
-        } else restart()
-    } 
-    }
-    document.addEventListener('keydown', control)
+function closeInstruction(){
+    document.getElementById('instructions').style.visibility = 'hidden'
+    instructionMode = false
+    playMode = true
+}
+
+
+
+
+
+
+
 
 
 // Create the seven tetrominoes (I, O, T, S, Z, J, and L)
-let iTet = [
-    [0, 1, 2, 3],
-    [-18, -8, 2, 12],
-    [0, 1, 2, 3],
-    [-18, -8, 2, 12]
-]
-
-let oTet = [
-    [0, 1, 10, 11],
-    [0, 1, 10, 11],
-    [0, 1, 10, 11],
-    [0, 1, 10, 11]
-]
-
-let tTet = [
-    [0, 1, 2, 11],
-    [-9, 0, 1, 11],
-    [-9, 0, 1, 2],
-    [-9, 1, 2, 11]
-]
-
-let sTet = [
-    [1, 2, 10, 11],
-    [-10, 0, 1, 11],
-    [1, 2, 10, 11],
-    [-10, 0, 1, 11]
-]
-
-let zTet = [
-    [0, 1, 11, 12],
-    [-8, 1, 2, 11],
-    [0, 1, 11, 12],
-    [-8, 1, 2, 11]
-]
-
-let jTet = [
-    [0, 1, 2, 12],
-    [-9, 1, 10, 11],
-    [0, 10, 11, 12],
-    [-9, -8, 1, 11]
-]
-
-let lTet = [
-    [0, 1, 2, 10],
-    [-10, -9, 1, 11],
-    [2, 10, 11, 12],
-    [-9, 1, 11, 12]
-]
-
+let iTet = [[0, 1, 2, 3], [-18, -8, 2, 12], [0, 1, 2, 3], [-18, -8, 2, 12]]
+let oTet = [[0, 1, 10, 11], [0, 1, 10, 11], [0, 1, 10, 11], [0, 1, 10, 11]]
+let tTet = [[0, 1, 2, 11], [-9, 0, 1, 11], [-9, 0, 1, 2], [-9, 1, 2, 11]]
+let sTet = [[1, 2, 10, 11], [-10, 0, 1, 11], [1, 2, 10, 11], [-10, 0, 1, 11]]
+let zTet = [[0, 1, 11, 12], [-8, 1, 2, 11], [0, 1, 11, 12], [-8, 1, 2, 11]]
+let jTet = [[0, 1, 2, 12], [-9, 1, 10, 11], [0, 10, 11, 12], [-9, -8, 1, 11]]
+let lTet = [[0, 1, 2, 10], [-10, -9, 1, 11], [2, 10, 11, 12], [-9, 1, 11, 12]]
 let theTetrominoes = [iTet, oTet, tTet, sTet, zTet, jTet, lTet];
 
-// for mini grid display
-let nextTetromino = [
-    [11, 12, 13, 14],
-    [6, 7, 11, 12],
-    [6, 7, 8, 12],
-    [7, 8, 11, 12],
-    [6, 7, 12, 13],
-    [6, 7, 8, 13],
-    [6, 7, 8, 11]
+// for the tet on small grid
+let smallTetromino = [
+    [[11, 12, 13, 14], [2, 7, 12, 17], [11, 12, 13, 14], [2, 7, 12, 17]],
+    [[6, 7, 11, 12], [6, 7, 11, 12], [6, 7, 11, 12], [6, 7, 11, 12]],
+    [[11, 12, 13, 17], [7,11,12,17], [7, 11, 12, 13], [7, 12, 13, 17]],
+    [[12, 13, 16, 17], [6, 11, 12, 17], [12, 13, 16, 17], [6, 11, 12, 17]],
+    [[11, 12, 17, 18], [8, 12, 13, 17], [11, 12, 17, 18], [8, 12, 13, 17]],
+    [[11, 12, 13, 18], [7, 12, 16, 17], [11, 16, 17, 18], [7, 8, 12, 17]],
+    [[11, 12, 13, 16], [6, 7, 12, 17], [13, 16, 17, 18], [7, 12, 17, 18]]
 ]
 
-
-
-//default position & rotation
 let currentPosition = 24;
 let currentRotation = 0;
-let randomTet = Math.floor(Math.random() * 7);
-let current = theTetrominoes[randomTet][currentRotation];
-let randomDisplay = Math.floor(Math.random() * 7);
-let nextTetDisplay = nextTetromino[randomDisplay]
 
 
-//draw tet & its shadow
+
+//assign functions to keyCodes
+function control(e) {
+    if (e.keyCode === 37) {moveLeft()} 
+    if (e.keyCode === 38) {rotate()} 
+    if (e.keyCode === 39) {moveRight()} 
+    if (e.keyCode === 40 && playMode) {moveDown()}
+    if (e.keyCode === 27) {pauseAndPlay()} 
+    if (e.keyCode === 32) {hardDrop()} 
+    if (e.keyCode === 16 && playMode) {
+        if(!holding){
+            hold()
+        } else switchTet()
+    } 
+    if (e.keyCode === 13){
+        if(idleMode){
+            start()
+        } else restart()
+    }
+
+}
+document.addEventListener('keydown', control)
+
+
+
+// draw tet & its shadow
 function draw(){
     display()
     current.forEach(index => squares[currentPosition + index].classList.add(colorClassTet[randomTet]))
@@ -260,8 +293,7 @@ function draw(){
 
     function shadow(shadowColor){
         let i = 0;
-        let shadowLandBase = false
-        let shadowLandFixed = false
+        let shadowLandBase, shadowLandFixed
         while(!shadowLandBase && !shadowLandFixed){
             let shadow = current.map(index => currentPosition + index + i)
             shadowLandBase = shadow.some(index => squares[index + 10].classList.contains('base'))
@@ -274,14 +306,15 @@ function draw(){
     }
 }
 
-
+// display next Tet (mini)
 function display(){
     miniGridArr.forEach(index => mini_squares[index].classList.remove(...colorClassMini))
     function miniDisplayColor(color){
-        nextTetromino[randomDisplay].forEach(index => mini_squares[index].classList.add(color))
+        smallTetromino[randomDisplay][0].forEach(index => mini_squares[index].classList.add(color))
     }
     miniDisplayColor(colorClassMini[randomDisplay])
 }
+
 
 function undraw(){
     current.forEach(index => {squares[currentPosition + index].classList.remove(...colorClassTet)})
@@ -289,33 +322,40 @@ function undraw(){
 }
 
 function moveDown() {
-    if(playMode && !startMode){
-        freeze()
+    called = false
+    freeze()
+    if(!idleMode && !called){ 
         undraw()
         currentPosition += 10
         draw()
     }
 }
 
-//check if tet is touching base/fixed
-let drop = false
+
+/* hardDrop: making shadow into fixed
+   softdrop: making tet into fixed */
+
+let drop    //bcm true if hardDrop is called
+let called  //dont execute the rest of moveDown if nextRandom is called
 function freeze(){
-    let touchBase = current.some(index => squares[currentPosition + index + 10].classList.contains('base'))
-    let touchFixed = current.some(index => squares[currentPosition + index + 10].classList.contains('fixed'))
-    if ((touchBase || touchFixed) && !drop) {
+    let landBase = current.some(index => squares[currentPosition + index + 10].classList.contains('base'))
+    let landFixed = current.some(index => squares[currentPosition + index + 10].classList.contains('fixed'))
+    if ((landBase || landFixed) && !drop) {
         //remove moving tet, make it a fixed one, add color class
         current.forEach(index => squares[currentPosition + index].classList.remove(...colorClassTet))
         current.forEach(index => squares[currentPosition + index].classList.add('fixed'))
         current.forEach(index => squares[currentPosition + index].classList.add(colorClassFixed[randomTet]))
     }
     
-    if (touchBase || touchFixed || drop){
+    if (landBase || landFixed || drop){
         deductLine()
         callNextRandom()
         currentRotation = 0
         draw()
+        called = true
     }
-    let thirdLine = [20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39] //unsolved bug
+
+    let thirdLine = [20,21,22,23,24,25,26,27,28,29]
     let gameOver = thirdLine.some(index => squares[index].classList.contains('fixed'))
     if (gameOver){
         gameOverMode = true
@@ -326,7 +366,6 @@ function freeze(){
 }
 
 
-
 //keep changing falling tet
 function callNextRandom(){
     randomTet = randomDisplay
@@ -335,9 +374,8 @@ function callNextRandom(){
     randomDisplay = Math.floor(Math.random() * 7)
 }
 
-
 function moveLeft(){
-    if(playMode && !startMode){
+    if(playMode && !idleMode){
         undraw()
         currentPosition--
         let touchLeftEdge = current.some(index => (currentPosition + index + 1) % 10 == 0)
@@ -349,7 +387,7 @@ function moveLeft(){
 }
 
 function moveRight(){
-    if(playMode && !startMode){
+    if(playMode && !idleMode){
         undraw()
         currentPosition++
         let touchRightEdge = current.some(index => (currentPosition + index - 1) % 10 == 9)
@@ -362,7 +400,7 @@ function moveRight(){
 
 
 function rotate(){
-    if(playMode && !startMode){
+    if(playMode && !idleMode){
         undraw()
         currentRotation++
         if(currentRotation == 4){
@@ -438,18 +476,24 @@ function horizontalStuck(){
 
 
 function pushFromEdge(){
+    // if horizontalStuck valid, rotation is reverted, otherwise it is as stated in rotate()
     let toBeDrawn = theTetrominoes[randomTet][currentRotation].map(index => currentPosition + index)
-    // make sure there's space to push
-    let noSpaceForLeftPush = toBeDrawn.some(index => squares[index + 1].classList.contains('fixed'))
-    let noSpaceForRightPush = toBeDrawn.some(index => squares[index - 1].classList.contains('fixed'))
+
+    // push from right
     let touchRightEdge = current.some(index => (currentPosition + index) % 10 == 9)
     let pushAwayFromRight = toBeDrawn.some(index => index % 10 == 0)
-    if(pushAwayFromRight && touchRightEdge && !noSpaceForRightPush){
+    let noSpaceForRightPush = toBeDrawn.some(index => squares[index - 1].classList.contains('fixed'))
+
+    if(touchRightEdge && pushAwayFromRight && !noSpaceForRightPush){
         currentPosition--
         return true
     }
-    let touchLeftEdge = current.some(index => (currentPosition + index) % 10 == 0)
+
+    // push from left
     let pushAwayFromLeft = toBeDrawn.some(index => index % 10 == 9)
+    let touchLeftEdge = current.some(index => (currentPosition + index) % 10 == 0)
+    let noSpaceForLeftPush = toBeDrawn.some(index => squares[index + 1].classList.contains('fixed'))
+    
     if(pushAwayFromLeft && touchLeftEdge && !noSpaceForLeftPush){
         currentPosition++
         return true
@@ -605,6 +649,178 @@ function iTet_finalCheck(){
 }
 
 
+let holding = false
+let onHold = []
+function hold(){
+    smallTetromino[randomTet][currentRotation].forEach(index => hold_squares[index].classList.add(colorClassMini[randomTet]))
+    onHold = [randomTet, currentRotation]
+    undraw()
+    callNextRandom()
+    //currentRotation = 0
+    draw()
+    called = true
+    holding = true
+}
+
+
+function switchTet(){
+    let toBeSwitch = theTetrominoes[onHold[0]][onHold[1]].map(index => index + currentPosition)
+    let containFixed = toBeSwitch.some(index => squares[index].classList.contains('fixed'))
+    let crossEdge = toBeSwitch.some(index => index % 10 == 9) && toBeSwitch.some(index => index % 10 == 0)
+    let containBase = toBeSwitch.some(index => squares[index].classList.contains('base'))
+    let collide = containFixed || crossEdge || containBase
+    let isITetVerOnHold = onHold[0]==0 && onHold[1]==1
+    let isITetVerCurrent = current.every(index => [-18, -8, 2, 12].includes(index))
+    let touchRightEdge = current.some(index => (currentPosition + index) % 10 == 9)
+    let touchLeftEdge = current.some(index => (currentPosition + index) % 10 == 0)
+
+    let specialCon = isITetVerOnHold && touchRightEdge && toBeSwitch.every(index => index % 10 == 0)
+    let specialCon2 = isITetVerCurrent && touchLeftEdge && toBeSwitch.some(index => index % 10 == 9 && !crossEdge)
+    if(specialCon){
+        undraw()
+        currentPosition--
+        canSwitch()
+    } else if (specialCon2){
+        undraw()
+        currentPosition+=2
+        canSwitch()
+    } else if (!collide){
+        undraw()
+        canSwitch()
+    } else if(!current.every(index => [-18, -8, 2, 12].includes(index))){
+        checkNoCollision()
+    } else checkITetVer()
+}
+
+function checkNoCollision(){
+    let toBeSwitch = theTetrominoes[onHold[0]][onHold[1]].map(index => index + currentPosition)
+    let containBase = toBeSwitch.some(index => squares[index].classList.contains('base'))
+    let rightGotSpace = !toBeSwitch.every(index => squares[index + 1].classList.contains('fixed'))
+    let leftGotSpace = !toBeSwitch.every(index => squares[index - 1].classList.contains('fixed'))
+    let leftGotTwoSpace = !toBeSwitch.every(index => squares[index - 2].classList.contains('fixed'))
+    //to make sure they're not on the other end
+    let touchLeftEdge = current.some(index => (currentPosition + index) % 10 == 0)
+    let leftGotFixed = current.some(index => squares[index + currentPosition - 1].classList.contains('fixed'))
+    let rightGotFixed = current.some(index => squares[index + currentPosition + 1].classList.contains('fixed'))
+    let touchRightEdge = current.some(index => (currentPosition + index) % 10 == 9)
+    let nextCrossLeft = toBeSwitch.some(index => (index + 1) % 10 == 9) && toBeSwitch.some(index => (index + 1) % 10 == 0)
+    let nextCrossRight = toBeSwitch.some(index => (index - 1) % 10 == 0) && toBeSwitch.some(index => (index -1) % 10 == 9)
+    let nextCrossTwoRight = toBeSwitch.some(index => (index - 2) % 10 == 0) && toBeSwitch.some(index => (index - 2) % 10 == 9)
+    let newContainFixed = toBeSwitch.some(index => squares[index + 1].classList.contains('fixed'))
+    let newContainFixed2 = toBeSwitch.some(index => squares[index - 1].classList.contains('fixed'))
+    let newContainFixed3 = toBeSwitch.some(index => squares[index - 2].classList.contains('fixed'))
+    //if onhold is iTet hori
+    let isITetHori = onHold[0]==0 && (onHold[1]==0 || onHold[1]==2)
+    //let isITetVerOnHold = onHold[0]==0 && (onHold[1]==1 || onHold[1]==3)
+
+    if(rightGotSpace && !nextCrossLeft && !newContainFixed && !containBase && (touchLeftEdge || leftGotFixed)){
+        undraw()
+        currentPosition++
+        canSwitch()
+    } else if(leftGotSpace && !nextCrossRight && !newContainFixed2 && !containBase && (touchRightEdge||rightGotFixed)){
+        undraw()
+        currentPosition--
+        canSwitch()
+    } else if(leftGotTwoSpace && !nextCrossTwoRight && !newContainFixed3 && !containBase && (touchRightEdge||rightGotFixed)){
+        undraw()
+        currentPosition-=2
+        canSwitch()
+    } else if(isITetHori && !newContainFixed2 && !nextCrossRight && !containBase){
+        undraw()
+        currentPosition--
+        canSwitch()
+    }
+    //unsolved: still cannot pushFromBase & bottomFixed
+}
+
+
+function checkITetVer(){
+    let toBeSwitch = theTetrominoes[onHold[0]][onHold[1]].map(index => index + currentPosition)
+    let inFirstColumn = current.every(index => (index + currentPosition) % 10 == 0)
+    //let crossEdge = toBeSwitch.some(index => index % 10 == 9) && toBeSwitch.some(index => index % 10 == 0)
+    let nextCrossLeft = toBeSwitch.some(index => (index + 1) % 10 == 9) && toBeSwitch.some(index => (index + 1) % 10 == 0)
+    let newContainFixed = toBeSwitch.some(index => squares[index + 1].classList.contains('fixed'))
+
+    let nextCrossTwoLeft = toBeSwitch.some(index => (index + 2) % 10 == 0) && toBeSwitch.some(index => (index + 2) % 10 == 9)
+    let newContainFixed4 = toBeSwitch.some(index => squares[index + 2].classList.contains('fixed'))
+
+    let rightGotSpace = !toBeSwitch.every(index => squares[index + 1].classList.contains('fixed'))
+    let leftGotFixed = current.some(index => squares[index + currentPosition - 1].classList.contains('fixed'))
+
+    let inSecondColumn = current.every(index => (index + currentPosition) % 10 == 1)
+    let leftLeftGotFixed = current.some(index => squares[index + currentPosition - 2].classList.contains('fixed'))
+
+    let inLastColumn = current.every(index => (index + currentPosition) % 10 == 9)
+    let newContainFixed2 = toBeSwitch.some(index => squares[index - 1].classList.contains('fixed'))
+
+
+    let rightGotFixed = current.some(index => squares[index + currentPosition + 1].classList.contains('fixed'))
+    if(inFirstColumn && !nextCrossLeft && !newContainFixed){
+        undraw()
+        currentPosition++
+        canSwitch()
+    } else if(inFirstColumn && !nextCrossTwoLeft && !newContainFixed4){ //for iTetHori
+        undraw()
+        currentPosition+=2
+        canSwitch()
+    } else if(leftGotFixed && rightGotSpace && !newContainFixed && !nextCrossLeft){
+        undraw()
+        currentPosition++
+        canSwitch()
+    } else if(leftGotFixed && !newContainFixed4 && !nextCrossTwoLeft){
+        undraw()
+        currentPosition+=2
+        canSwitch()
+    } else if(inSecondColumn && rightGotSpace  && !newContainFixed){
+        undraw()
+        currentPosition++
+        canSwitch()
+    } else if (leftLeftGotFixed && rightGotSpace && !nextCrossLeft && !newContainFixed){
+        undraw()
+        currentPosition++
+        canSwitch()
+    } else if ((inLastColumn||rightGotFixed) && !newContainFixed2){
+        undraw()
+        currentPosition--
+        canSwitch()
+    } 
+}
+
+
+function canSwitch(){
+    miniGridArr.forEach(index => hold_squares[index].classList.remove(...colorClassMini))
+    smallTetromino[randomTet][currentRotation].forEach(index => hold_squares[index].classList.add(colorClassMini[randomTet]))
+
+    let newHold = [randomTet, currentRotation]
+    //undraw()
+    randomTet = onHold[0]
+    currentRotation = onHold[1]
+    current = theTetrominoes[randomTet][currentRotation]
+
+    onHold = newHold
+    draw()
+}
+
+/*
+function checkSwitch(){
+    let toBeSwitch = theTetrominoes[onHold[0]][onHold[1]].forEach(index => squares[index + currentPosition])
+    let collision = toBeSwitch.classList.contains('fixed')
+}
+
+function checkPush(){
+    let toBeSwitch = theTetrominoes[onHold[0]][onHold[1]].forEach(index => squares[index + currentPosition])
+    
+}
+*/
+
+
+
+
+
+
+
+
+// DEDUCT LINE
 function deductLine(){
     let oneUnit = []
     for(let i = 0; i < 10; i++){
@@ -653,6 +869,7 @@ function deductLine(){
 
 let currentLevel = 1
 function checkLevel(){
+    let oldLevel = currentLevel
     if (totalScore > 1999){
         currentLevel = 2
         currentSpeed = 900
@@ -700,10 +917,26 @@ function checkLevel(){
     }
     level.innerHTML = currentLevel
     setSpeed(currentSpeed)
+    if(oldLevel !== currentLevel){
+        levelUpEff()
+    }
 }
 
+
+function levelUpEff(){
+    grid.style.boxShadow = '0 0 18px rgb(0, 255, 166)';
+    popUp.style.visibility = 'visible';
+    document.getElementById('new-level').innerHTML = currentLevel;
+    function black(){
+        grid.style.boxShadow = '';
+        popUp.style.visibility = 'hidden'
+    }
+    setTimeout(black, 800);
+}
+
+
 function hardDrop(){
-    if(playMode && !startMode){
+    if(playMode && !idleMode){
         gridArr.forEach(index => squares[index].classList.remove(...colorClassTet))
         shadowToFixed(colorClassShadow[randomTet], colorClassFixed[randomTet])
         function shadowToFixed(shadowColor, fixedColor){
@@ -719,57 +952,26 @@ function hardDrop(){
 }
 
 
-for (let i=0; i<25; i++){
-    mini_grid.appendChild(document.createElement("div"));
-}
-let mini_squares = Array.from(document.querySelectorAll("#mini-grid div"));
-
-function restart(){
-    if(!playMode && !instructionMode){
-        startMode = true
-        currentLevel = 1
-        level.innerHTML = currentLevel
-        totalScore = 0
-        score.innerHTML = totalScore
-        currentSpeed = 1000
-        currentPosition = 24
-        gridArr.forEach(index => squares[index].classList.remove('fixed', 'pauseColor', 'pauseColorFixed'))
-        gridArr.forEach(index => squares[index].classList.remove(...colorClassFixed,...colorClassShadow,...colorClassTet))
-        miniGridArr.forEach(index => mini_squares[index].classList.remove(...colorClassMini, 'pauseColorMini'))
-        start()
-        write('')
-        playMode = true
-        gameOverMode = false
-        resume_btn.style.visibility = "hidden"
-    }
-}
-
-let instructionMode = false
-function howToPlayScreen(){
-    document.getElementById('instructions').style.visibility = 'visible';
-    instructionMode = true
-    if(instructionMode){
-        function subcontrol(e){
-            if (e.keyCode == 27){
-                closeInstruction()
-            }
-        }     
-    }
-    document.addEventListener('keydown', subcontrol)
-}
 
 
-function closeInstruction(){
-    document.getElementById('instructions').style.visibility = 'hidden'
-    instructionMode = false
-}
+
+
+
+
+
+
 
 /*
 to do:
-hold
-effect when level up
 effect when deduct line
 add score when tet drops
-problem: game over at second roll
-*/
+make tet 3d
+toBeDrawn into toBeRotated
+mini class color used by hold also
+small bug: clicking on howToPlay-btn using mouse & hit enter (for start game) at the same time
 
+fixed:
+hold feature
+effect when level up
+small bug: current remains even after restarting - by putting current & randomTet into start() function
+*/
