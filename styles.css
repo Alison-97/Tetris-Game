@@ -46,15 +46,18 @@ body{
 .wrapper{
     display: flex;
     position: relative; /*so that .word & the buttons can be positioned absolutely*/
+    /*border: green solid;*/
 }
 
 .grid {
     display: flex;
     flex-wrap: wrap;
     width: 270px;
+    /*border: solid yellow;*/
     justify-content: center;
     padding: 0;
     height: auto;
+
 }
 
 .grid div{
@@ -69,13 +72,14 @@ body{
 .base {display: none;}
 .hide {display: none;}
 
-#level, .right{
+.left, .right{
     text-align: center;
     font-weight: 200;
-    width: 15%;
+    /*border: red solid;*/
+    padding: 15px;
 }
 
-#mini-grid{
+#mini-grid, #hold-grid{
     background-color: var(--dark-grid);
     height: 100px;
     width: 100px;
@@ -90,12 +94,19 @@ body{
     height:20px;
 }
 
+#hold-grid div{
+    width:20px;
+    height:20px;
+}
+
 #player_score, #player_level{
     font-size: 200%;
     font-weight: 800;
 }
 
-
+#new-level{
+    font-size: 500%;
+}
 
 
 
@@ -222,14 +233,15 @@ body{
     margin-right: 10px;
 }
 
-/*speciality issue: why the default css for all other element are using dark- color, 
-but only grid is using normal-grid? if it is using dark-color, when u click start button,
-you'll need to change the color using JS, meaning the changes is made directly into the element,
-as an inline element, so an inline element would mask all the colors defined in the classes;
-so my solution is, use the normal color first, then add dark color in JS, and remove the dark color
-when start button is clicked
-
-why mini-grid can, normal grid cannot? cz minigrid is a container for the mini div, and im changing
-the color of the entire container, but for normal grid, im changing the color of each div, not
-the grid that act as a container
-*/
+#level-up-pop-up{
+    background-color: rgba(34, 39, 56, .95);
+    box-sizing: border-box;
+    padding: 20px;
+    width: 140px;
+    left:50%;
+    top:40%;
+    margin-left: -70px;
+    border-radius: 16px;
+    text-align: center;
+    color: white;
+}
