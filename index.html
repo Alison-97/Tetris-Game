@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" touch-action="pan-x pan-y">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css"></link>
+    <title>My Simple Tetris</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+
+<body>
+    <div class="container">
+        <div class="wrapper">
+            <!-- Display level on the left -->
+            <div class="left">
+                <div id="level">LEVEL<br><span id="player_level">1</span></div>
+                <div id="hold-grid"></div>
+            </div>
+
+            <!-- Append 200 squares, 10 base, 20 first line -->
+            <div class="grid"></div>
+
+            <!-- To display status (TETRIS, PAUSE, GAME OVER)-->
+            <div class="word"></div>
+
+            <!-- Create buttons for different screen
+            disable tab focus to avoid pressing enter (start/restart) when the tab is focused on resume/howToPlay-->
+            <button tabindex="-1" id="resume" class="button" onclick="pauseAndPlay(event)">RESUME</button>
+            <button tabindex="-1" id="restart" class="button" onclick="restart()">RESTART</button>
+            <button tabindex="-1" id="start" class="button" onclick="start()">START GAME</button>
+            <button tabindex="-1" id="howToPlay" class="button" onclick="howToPlayScreen()">HOW TO PLAY?</button>
+            <div id="level-up-pop-up" style="position: absolute; visibility: hidden;">Level Up <br> <span id="new-level">1</span></div>
+
+            <!-- Display score & minigrid on the right -->
+            <div class="right">
+                <div id="score">SCORE<br> <span id="player_score">0</span></div>
+                <div id="mini-grid"></div>
+                <i onclick="pauseAndPlay(event)" id="pause-btn" class="fa fa-pause-circle-o"></i>
+            </div>
+
+            <!-- Instruction screen -->
+            <div id="instructions" style="position: absolute; visibility: hidden;">
+                <h4 style="text-align: center;">Instructions: </h4>
+                <ul>
+                    <li> <i class="fa fa-arrow-left"></i> Move Left</li>
+                    <li> <i class="fa fa-arrow-right"></i> Move Right</li>
+                    <li> <i class="fa fa-arrow-down"></i> Move Down</li>
+                    <li> <i class="fa fa-arrow-up"></i> Rotate</li>
+                    <li> <i class="fa fa-exchange"></i> Shift: Switch block</li>
+                    <li> <i class="fa fa-square-o"></i> Space Bar: Hard Drop</li>
+                    <li> <i class="fa fa-pause-circle-o"></i> Esc: Pause/Resume</li>
+                    <i id='close' onclick="closeInstruction()" class="fa fa-window-close"></i> 
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

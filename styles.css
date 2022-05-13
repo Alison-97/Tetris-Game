@@ -1,0 +1,358 @@
+/* COLOR VARIABLES */
+:root{
+    --normal-font: rgb(110, 120, 136);
+    --dark-font: rgb(59, 65, 73);
+    --gameover-font: #7E707B;
+    --normal-container: rgb(34, 39, 56);
+    --dark-container: rgb(23, 26, 36);
+    --gameover-container: #3B2936;
+    --normal-grid: #181825;
+    --dark-grid: #12121B;
+    --gameover-grid: #2E171D;
+    --pause-fixed-color: rgb(28, 31, 35);
+    --gameover-fixed-color: #3C2B2C;
+
+    /* THE SEVEN TET COLORS */
+    --color1: 147, 191, 180;
+    --color2: 152, 109, 91;
+    --color3: 230, 107, 101;
+    --color4: 95, 125, 136;
+    --color5: 217, 167, 119;
+    --color6: 218, 197, 139;
+    --color7: 241, 238, 199;
+    --alpha: 0.2;
+}
+
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+    background-color: #3f4558;
+    font-family: "Poppins", sans-serif;
+    color: var(--dark-font);
+    box-sizing: border-box;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    /* prevent scrolling */
+    overflow:hidden;
+    position:fixed;
+    top:0;
+    bottom: 0;
+    /* prevent zooming */
+    /* touch-action: pan-x pan-y; */
+    /* prevent selection */
+    user-select: none;
+    -webkit-user-select: none; /* Safari */
+}
+
+.container{
+    /* border: orange solid; */
+    height: 95vh;
+    width: 95vh;
+    background-color: var(--dark-container);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+top: 50%;
+transform: translate(0, -50%);
+}
+
+.wrapper{
+    display: flex;
+    position: relative; /*so that .word & the buttons can be positioned absolutely*/
+    /*border: green solid;*/
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 270px;
+    
+    justify-content: center;
+    padding: 0;
+    height: auto;
+
+}
+
+.grid div{
+    width: 9.259%;
+    height: 25px;
+    background-color: var(--normal-grid); /* speciality issue (read below) */
+    margin: 0.26%;
+    border-radius: 10%
+}
+
+/* the 10 base & 20 top div in grid */
+.base {display: none;}
+.hide {display: none;}
+
+.left, .right{
+    text-align: center;
+    font-weight: 200;
+    /*border: red solid;*/
+    padding: 15px;
+}
+
+#mini-grid, #hold-grid{
+    background-color: var(--dark-grid);
+    height: 100px;
+    width: 100px;
+    margin-top: 30px;
+    border-radius: 8%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#pause-btn{
+    margin-top: 30px;
+    font-size: 50px;
+    visibility: hidden;
+}
+
+#mini-grid div{
+    width:20px;
+    height:20px;
+}
+
+#hold-grid div{
+    width:20px;
+    height:20px;
+}
+
+#player_score, #player_level{
+    font-size: 200%;
+    font-weight: 800;
+}
+
+#new-level{
+    font-size: 500%;
+}
+
+
+
+
+/* .grid is added to ensure specificity higher than .grid div */
+.grid .redShadow{background-color: rgba(var(--color1), var(--alpha));}
+.grid .orangeShadow{background-color: rgba(var(--color2), var(--alpha));}
+.grid .yellowShadow{background-color: rgba(var(--color3), var(--alpha));}
+.grid .greenShadow{background-color: rgba(var(--color4), var(--alpha));}
+.grid .blueShadow{background-color: rgba(var(--color5), var(--alpha));}
+.grid .violetShadow{background-color: rgba(var(--color6), var(--alpha));}
+.grid .purpleShadow{background-color: rgba(var(--color7), var(--alpha));}
+
+.grid .redTet, .grid .redFixed{background-color: rgb(var(--color1));}
+.grid .orangeTet, .grid .orangeFixed{background-color: rgb(var(--color2));}
+.grid .yellowTet, .grid .yellowFixed{background-color: rgb(var(--color3));}
+.grid .greenTet, .grid .greenFixed{background-color: rgb(var(--color4));}
+.grid .blueTet, .grid .blueFixed{background-color: rgb(var(--color5));}
+.grid .violetTet, .grid .violetFixed{background-color: rgb(var(--color6));}
+.grid .purpleTet, .grid .purpleFixed{background-color: rgb(var(--color7));}
+
+
+
+
+.redMini{background-color: rgb(var(--color1)); outline: 0.7px solid #181825}
+.orangeMini{background-color: rgb(var(--color2)); outline: 0.7px solid #181825}
+.yellowMini{background-color: rgb(var(--color3)); outline: 0.7px solid #181825}
+.greenMini{background-color: rgb(var(--color4)); outline: 0.7px solid #181825}
+.blueMini{background-color: rgb(var(--color5)); outline: 0.7px solid #181825}
+.violetMini{background-color: rgb(var(--color6)); outline: 0.7px solid #181825}
+.purpleMini{background-color: rgb(var(--color7)); outline: 0.7px solid #181825}
+
+
+.pauseColor{
+    background-color: var(--dark-grid) !important
+}
+
+.pauseColorFixed, .pauseColorMini{
+    background-color: var(--pause-fixed-color) !important;
+}
+
+
+.word{
+    font-size: 200%;
+    position: absolute;
+    color: white;
+    top: 43%;
+    right: 0;
+    left: 0;
+    text-align: center;
+    font-family: 'Trebuchet MS', Arial, sans-serif;
+}
+
+.button{
+    position: absolute;
+    width: 100px;
+    left:50%;
+    margin-left: -50px;
+    text-align: center;
+    color: var(--normal-grid);
+    top: 55%;
+    background-color: var(--normal-font);
+    padding: 4px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    font-family: "Poppins", sans-serif;
+    font-size: 1rem;
+}
+
+#resume{
+    visibility: hidden;
+    top: 53%;
+}
+
+#restart{
+    visibility: hidden;
+}
+
+#start{
+    visibility: visible;
+    top: 53%;
+    width: 160px;
+    margin-left: -80px;
+}
+
+#howToPlay{
+    visibility: visible;
+    top: 63%;
+    width: 160px;
+    margin-left: -80px;
+}
+
+.button:hover{
+    background-color: rgb(122, 255, 226);
+}
+
+#instructions{
+    background-color: rgba(34, 39, 56, .95);
+    width: 65vh;
+    left:50%;
+    margin-left: -32vh;
+    height: 35vh;
+    top: 50%;
+    margin-top: -17vh;
+    color: white;
+    border-radius: 16px;
+    font-size: 90%;
+}
+
+#close{
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+#instructions li{
+    list-style-type: none;
+}
+
+#instructions i{
+    margin-right: 10px;
+}
+
+#level-up-pop-up{
+    background-color: rgba(34, 39, 56, .95);
+    box-sizing: border-box;
+    padding: 20px;
+    width: 140px;
+    left:50%;
+    top:40%;
+    margin-left: -70px;
+    border-radius: 16px;
+    text-align: center;
+    color: white;
+}
+
+@media only screen and (max-width: 600px) {
+    .grid {
+        width: 50vw;
+    }
+    
+    .grid div{
+        width: 9.259%;
+        height: calc(50*0.09259vw);
+        background-color: var(--normal-grid); /* speciality issue (read below) */
+        margin: 0.26%;
+        border-radius: 10%
+    }
+    
+    #mini-grid, #hold-grid{
+        height: 60px;
+        width: 60px;
+    }
+
+    #mini-grid div{
+        width:12px;
+        height:12px;
+    }
+    
+    #hold-grid div{
+        width:12px;
+        height:12px;
+    }
+
+    .container{
+        height: 100%;
+        width: 100%;
+    }
+
+    .left, .right{
+        padding: 10px;
+    }
+
+    #score, #level{
+        font-size: 70%;
+    }
+
+    #instructions{
+        background-color: rgba(34, 39, 56, .95);
+        width: 44vh;
+        left:50%;
+        margin-left: -22vh;
+        font-size: 80%;
+    }
+}
+
+
+@media only screen and (max-width: 450px) {
+    .grid {
+        width: 60vw;
+    }
+    
+    .grid div{
+        width: 9.259%;
+        height: calc(60*0.09259vw);
+        border-radius: 10%
+    }
+    
+    #mini-grid, #hold-grid{
+        height: 40px;
+        width: 40px;
+    }
+
+    #mini-grid div{
+        width:8px;
+        height:8px;
+    }
+    
+    #hold-grid div{
+        width:8px;
+        height:8px;
+    }
+
+    .container{
+        height: 100vh;
+        width: 100vw;
+    }
+
+    .left, .right{
+        padding: 5px;
+    }
+}
